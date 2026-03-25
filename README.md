@@ -31,3 +31,13 @@ def _load_data_from_file(self):
                 self.student_list.append(stu)
     except FileNotFoundError:
         print("文件不存在！")#保证程序在找不到文件时也有显示
+#随机点名
+def random_call_names(self,count):
+    return random.sample(self.student_list,count)
+def generate_exam_seat_file(self):
+    shuffled_stus = random.sample(...) # 随机打乱顺序
+#生成考场表
+    with open("考场安排表.txt", "w") as f:
+        f.write(f"生成时间：{now}\n")
+        for idx, stu in enumerate(shuffled_stus,1):
+            f.write(f"座位号：{idx} | 姓名：{stu.name} | 学号...")

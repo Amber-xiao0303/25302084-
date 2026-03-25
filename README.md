@@ -57,7 +57,6 @@ class ExamSystem:
         folder = "准考证"
         if not os.path.exists(folder):
             os.mkdir(folder)
-
         for idx, stu in enumerate(student_list, 1):
             file_name = f"{folder}/{idx:02d}.txt"
             try:
@@ -68,4 +67,47 @@ class ExamSystem:
             except Exception as e:
                 print(f"生成{file_name}失败：{e}")
         print(f"准考证文件夹与{len(student_list)}个文件已生成")
+def main():
+    system = ExamSystem(r"C:\Users\肖乐儿\Desktop\人工智能编程语言学生名单.txt")
+    if not system.student_list:
+        return
+    while True:
+        print("1. 按学号查询学生信息")
+        print("2. 随机点名")
+        print("3. 生成考场安排表")
+        print("4. 生成全套准考证文件")
+        print("0. 退出系统")
+        choice = input("请输入功能编号：")
 
+        if choice == "1":
+            sid = input("请输入学号：")
+            stu = system.search_by_id(sid)
+            print(stu if stu else "未找到该学生")
+
+        elif choice == "2":
+            try:
+                n = int(input(f"请输入点名人数（总人数：{len(system.student_list)}）："))
+                result = system.random_call_names(n)
+                if result:
+                    for i, stu in enumerate(result, 1):
+                        print(f"{i}. {stu.name}({stu.student_id})")
+                else:
+                    print("输入人数不合法")
+            except ValueError:
+                print("请输入有效数字")
+
+        elif choice == "3":
+            system.generate_exam_seat_file()
+
+        elif choice == "4":
+            shuffled = system.generate_exam_seat_file()
+            if shuffled:
+                system.create_ticket_folder_and_files(shuffled)
+
+        elif choice == "0":
+            print("退出系统")
+            break
+        else:
+            print("输入无效，请重新选择")
+if __name__ == "__main__":
+    main()

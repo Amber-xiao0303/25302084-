@@ -16,28 +16,56 @@ class Student:
         #打印学生信息时，显示不是乱码
         return f"学号：{self.student_id}|姓名：{self.name}|性别：{self.gender}|班级：{self.class_num}|学院：{self.college}"
 #创建ExamSystem
-def _init_(self,file_path):
-    self.file_path = file_path#记录学生名单路径
-    self.student_list = []#存储所有学生对象
-    self._load_data_from_file()#运行时自动读取文件
-def _load_data_from_file(self):
-    try:
-        with open(self.file_path,"r",encoding="utf-8") as f:
-            lines = f.readlines()
-            for line in lines[1:]:#跳过表头，逐行读取信息
-                line=line.strip()
-                items=line.split("\t")#将每行学生变成学生对象
-                stu=Student(items[1],items[2],items[3],items[4],items[5])
-                self.student_list.append(stu)
-    except FileNotFoundError:
-        print("文件不存在！")#保证程序在找不到文件时也有显示
+class ExamSystem:
+    def _init_(self,file_path):
+        self.file_path = file_path#记录学生名单路径
+        self.student_list = []#存储所有学生对象
+        self._load_data_from_file()#运行时自动读取文件
+    @staticmethod
+    def _load_data_from_file(self):
+        try:
+            with open(self.file_path,"r",encoding="utf-8") as f:
+                lines = f.readlines()
+                for line in lines[1:]:#跳过表头，逐行读取信息
+                    line=line.strip()
+                    items=line.split("\t")#将每行学生变成学生对象
+                    stu=Student(items[1],items[2],items[3],items[4],items[5])
+                    self.student_list.append(stu)
+        except FileNotFoundError:
+            print("文件不存在！")#保证程序在找不到文件时也有显示
 #随机点名
-def random_call_names(self,count):
-    return random.sample(self.student_list,count)
-def generate_exam_seat_file(self):
-    shuffled_stus = random.sample(...) # 随机打乱顺序
+    def random_call_names(self,count):
+        return random.sample(self.student_list,count)
+    def generate_exam_seat_file(self):
+        shuffled_stus = random.sample(...) # 随机打乱顺序
 #生成考场表
-    with open("考场安排表.txt", "w") as f:
-        f.write(f"生成时间：{now}\n")
-        for idx, stu in enumerate(shuffled_stus,1):
-            f.write(f"座位号：{idx} | 姓名：{stu.name} | 学号...")
+    def generate_exam_seat_file(self):
+        shuffled_stus = random.sample(self.student_list, len(self.student_list))
+        try:
+            with open("考场安排表.txt", "w", encoding="utf-8") as f:
+                now = time.strftime("%Y-%m-%d %H:%M:%S")#调整时间输出格式
+                f.write(f"生成时间：{now}\n")
+                for idx, stu in enumerate(shuffled_stus, 1):
+                    f.write(f"座位号：{idx:02d} | 姓名：{stu.name} | 学号：{stu.student_id}\n")
+            print("考场安排表已生成：考场安排表.txt")
+            return shuffled_stus
+        except Exception as e:
+            print(f"生成考场表失败：{e}")
+            return []
+#生成学生准考证文件夹
+    def create_ticket_folder_and_files(self, student_list):
+        folder = "准考证"
+        if not os.path.exists(folder):
+            os.mkdir(folder)
+
+        for idx, stu in enumerate(student_list, 1):
+            file_name = f"{folder}/{idx:02d}.txt"
+            try:
+                with open(file_name, "w", encoding="utf-8") as f:
+                    f.write(f"考场座位号：{idx:02d}\n")
+                    f.write(f"姓名：{stu.name}\n")
+                    f.write(f"学号：{stu.student_id}\n")
+            except Exception as e:
+                print(f"生成{file_name}失败：{e}")
+        print(f"准考证文件夹与{len(student_list)}个文件已生成")
+
